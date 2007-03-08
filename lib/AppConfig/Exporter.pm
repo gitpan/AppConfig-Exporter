@@ -11,14 +11,16 @@ AppConfig::Exporter - Allow modules to import AppConfig sections from a shared c
 
 =cut 
 
-our $VERSION = sprintf("%d.%02d", q$Revision: 1.2 $ =~ /(\d+)\.(\d+)/);
+our $VERSION = sprintf("%d.%02d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
 
 =head1 SYNOPSIS
 
     package MyConfig;
     use base qw( AppConfig::Exporter );
 
-    __PACKAGE__->configure( Config_File => 'myfile.conf', AppConfig_Options => { CASE => 0 } );
+    __PACKAGE__->configure( Config_File => 'myfile.conf', 
+                            AppConfig_Options => { CASE => 0 }, 
+                            AppConfig_Define => { Fun_Pickles => {ARGCOUNT => ARGCOUNT_LIST} } );
     1;
 
 =head1 USAGE
@@ -49,13 +51,16 @@ my $appconfig;
 
 =item configure
 
-This is how your class is initialized.  You must specify a Config_File, and you may specify a hashref of AppConfig_Options.
+This is how your class is initialized.  You must specify a Config_File, and you may specify a hashref of AppConfig_Options and AppConfig_Define.
 
 =over 
 
 =item Config_File
 
 Required - path to your AppConfig compatible config file
+
+    __PACKAGE__->configure( Config_File => 'myfile.conf' );
+
 
 =item AppConfig_Options
 
@@ -66,6 +71,21 @@ Hash ref that will be fed to AppConfig - you can override this module's defaults
         GLOBAL => {
             ARGCOUNT => ARGCOUNT_ONE,
         }
+
+For example:
+
+    __PACKAGE__->configure( Config_File => 'myfile.conf', 
+                            AppConfig_Options => { CASE => 0 } ); 
+
+=item AppConfig_Define
+
+Hash ref that will be fed to AppConfig as a define statement if you wish for a specific variable to have different properties than the global ones.  
+
+B<Note:> So that you can use AppConfig's constants, this module automatically imports AppConfig's b<:argcount> tag into your package for you.
+
+
+    __PACKAGE__->configure( Config_File => 'myfile.conf', 
+                            AppConfig_Define => { Fun_Pickles => {ARGCOUNT => ARGCOUNT_LIST} } );
 
 =back
 
@@ -79,13 +99,17 @@ sub configure {
 
     my $config_file = delete $opts{Config_File} or die __PACKAGE__ . ' requires a Config_File argment';
 
-    $appconfig = AppConfig->new({
-	CASE   => 1,
-	CREATE => 1,
-	GLOBAL => { 
-	    ARGCOUNT => ARGCOUNT_ONE,
-	}
-    });
+    $appconfig = AppConfig->new(
+				{
+				    CASE   => 1,
+				    CREATE => 1,
+				    GLOBAL => { 
+					ARGCOUNT => ARGCOUNT_ONE,
+				    },
+				    defined $opts{AppConfig_Options} ? %{$opts{AppConfig_Options}} : (),
+				},
+				defined $opts{AppConfig_Define} ? %{$opts{AppConfig_Define}}: (),  
+				);
     
     $appconfig->file( $config_file ) or die qq(Error reading config file "$config_file");
 }
@@ -109,6 +133,9 @@ sub import {
 	    __PACKAGE__->export_to_level( 1, $class, "\%$section" );
 	}
     }
+    my $callpkg = caller(0);
+    eval "package $callpkg; use AppConfig qw(:argcount);";
+    die $@ if $@;
 }
 
 =head1 AUTHOR
