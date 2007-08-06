@@ -1,6 +1,6 @@
 ---
 name: AppConfig-Exporter
-version: 1.03
+version: 1.04
 author:
   - 'Ben H Kram <bkram@dce.harvard.edu>'
 abstract: Allow modules to import AppConfig sections from a shared configuration.
@@ -8,11 +8,12 @@ license: perl
 resources:
   license: http://dev.perl.org/licenses/
 build_requires:
+  AppConfig: 0
   Test::More: 0
 provides:
   AppConfig::Exporter:
     file: lib/AppConfig/Exporter.pm
-    version: 1.03
+    version: 1.04
 generated_by: Module::Build version 0.2806
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

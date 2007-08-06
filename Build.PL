@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/AppConfig/Exporter.pm',
     build_requires => {
         'Test::More' => 0,
+	'AppConfig'  => 0,
     },
     add_to_cleanup      => [ 'AppConfig-Exporter-*' ],
 );

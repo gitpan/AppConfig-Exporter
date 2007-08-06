@@ -7,5 +7,7 @@ lib/AppConfig/Exporter.pm
 t/00-load.t
 t/01-configure.t
 t/02-import.t
+t/TestConfig.pm
+t/config.test
 t/pod-coverage.t
 t/pod.t

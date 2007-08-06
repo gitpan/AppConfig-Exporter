@@ -11,7 +11,7 @@ AppConfig::Exporter - Allow modules to import AppConfig sections from a shared c
 
 =cut 
 
-our $VERSION = sprintf("%d.%02d", q$Revision: 1.3 $ =~ /(\d+)\.(\d+)/);
+our $VERSION = sprintf("%d.%02d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
 
 =head1 SYNOPSIS
 
