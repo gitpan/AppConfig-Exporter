@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 BEGIN {
     unshift @INC, q(./t);
@@ -9,3 +9,4 @@ BEGIN {
 
 is($one{Pear}, 'yellow', 'data');
 is(ref $two{Cars}, 'ARRAY', 'Config Options');
+isa_ok(TestConfig->AppConfig, AppConfig);

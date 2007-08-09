@@ -11,7 +11,7 @@ AppConfig::Exporter - Allow modules to import AppConfig sections from a shared c
 
 =cut 
 
-our $VERSION = sprintf("%d.%02d", q$Revision: 1.4 $ =~ /(\d+)\.(\d+)/);
+our $VERSION = q(1.5);
 
 =head1 SYNOPSIS
 
@@ -37,6 +37,8 @@ B<AppConfig::Exporter> is intended to be subclassed to specify your configuratio
 
     use MyConfig qw(fruit);
     print "$fruit{oranges}!";  # tasty!
+
+    my $appconfig = MyConfig->AppConfig;
 
 =cut
 
@@ -116,9 +118,7 @@ sub configure {
 
 =item import
 
-This does the heavy lifting using the Exporter.  You don't call this directly - B<use> will do it for you.
-
-=back
+This does the heavy lifting using the Exporter.  You don\'t call this directly - B<use> will do it for you.
 
 =cut
 
@@ -136,6 +136,18 @@ sub import {
     my $callpkg = caller(0);
     eval "package $callpkg; use AppConfig qw(:argcount);";
     die $@ if $@;
+}
+
+=item AppConfig
+
+You can use this to access the the raw B<AppConfig> object that the exporter sources for configuration. 
+
+=back
+
+=cut
+
+sub AppConfig{
+    return $appconfig;
 }
 
 =head1 AUTHOR
